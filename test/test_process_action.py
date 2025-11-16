@@ -86,7 +86,7 @@ class FakeCard(InterfaceCard):
         return self._resources[resource]
     
 class FakeGrid(InterfaceGrid):
-    def __init__(self):
+    def __init__(self) -> None:
         self._cards: Dict[Tuple[int, int], FakeCard] = {}
 
     def getCard(self, coordinate: GridPosition) -> Optional[InterfaceCard]:
@@ -234,9 +234,9 @@ class TestProcessAction(unittest.TestCase):
         self.card_B = FakeCard(self.pos_B, effect_B_upper, self.effect_B_lower, [])
         self.grid.add_card(self.card_B)
         
-        player_inputs_gain = []
-        player_outputs_gain = [(Resource.GREEN, self.pos_B)]
-        player_pollution_gain = []
+        player_inputs_gain: List[Tuple[Resource, GridPosition]] = []
+        player_outputs_gain: List[Tuple[Resource, GridPosition]] = [(Resource.GREEN, self.pos_B)]
+        player_pollution_gain: List[GridPosition] = []
         
         result = self.process_action.activateCard(
             self.card_B, self.grid, 
