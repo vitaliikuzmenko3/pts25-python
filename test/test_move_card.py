@@ -32,18 +32,19 @@ class TestMoveCard(unittest.TestCase):
         self.sample_card = Card()
         self.destination = GridPosition(0, 1)
 
-    def test_move_card_successful(self):
+    def test_move_card_successful(self) -> None:
         fake_pile = FakePile(card_to_return=self.sample_card)
         fake_grid = FakeGrid(can_put=True)
         card_index_to_take = 1
 
-        result = self.move_card_action.execute(fake_pile, fake_grid, card_index_to_take, self.destination)
+        result = self.move_card_action.execute(
+            fake_pile, fake_grid, card_index_to_take, self.destination)
 
         self.assertTrue(result)
         self.assertEqual(fake_pile.take_card_called_with_index, card_index_to_take)
         self.assertTrue(fake_grid.put_card_called)
 
-    def test_move_card_fails_if_grid_cannot_put(self):
+    def test_move_card_fails_if_grid_cannot_put(self) -> None:
         fake_pile = FakePile(card_to_return=self.sample_card)
         fake_grid = FakeGrid(can_put=False)
 
@@ -52,7 +53,7 @@ class TestMoveCard(unittest.TestCase):
         self.assertFalse(result)
         self.assertFalse(fake_grid.put_card_called)
 
-    def test_move_card_fails_if_pile_has_no_card(self):
+    def test_move_card_fails_if_pile_has_no_card(self) -> None:
         fake_pile = FakePile(card_to_return=None)
         fake_grid = FakeGrid(can_put=True)
 
