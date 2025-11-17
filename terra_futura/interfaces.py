@@ -1,5 +1,8 @@
 # pylint: disable=unused-argument, duplicate-code, redefined-builtin
-from typing import List, Tuple
+from typing import List, Tuple, TYPE_CHECKING
+if TYPE_CHECKING:
+    from terra_futura.card import Resource, CardEffects
+
 
 
 class InterfaceActivateGrid:
