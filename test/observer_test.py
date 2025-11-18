@@ -5,42 +5,35 @@ from terra_futura.interfaces import ObserverInterface
 
 class FakeObserver(ObserverInterface):
     def __init__(self):
-        self.last_notification = None
+        self.received = None
 
     def notify(self, game_state: str) -> None:
-        self.last_notification = game_state
+        self.received = game_state
 
 
 class TestGameObserver(unittest.TestCase):
 
-    def test_notify_single_player(self) -> None:
+    def test_register_and_notify(self) -> None:
+        observer = GameObserver()
+        fake1 = FakeObserver()
+        fake2 = FakeObserver()
+
+        observer.register(1, fake1)
+        observer.register(2, fake2)
+
+        state = {1: "state1", 2: "state2"}
+        observer.notifyAll(state)
+
+        self.assertEqual(fake1.received, "state1")
+        self.assertEqual(fake2.received, "state2")
+
+    def test_notify_only_registered(self) -> None:
         observer = GameObserver()
         fake = FakeObserver()
 
         observer.register(1, fake)
-        observer.notifyAll({1: "state_for_player_1"})
 
-        self.assertEqual(fake.last_notification, "state_for_player_1")
+        state = {1: "hello", 99: "should_not_send"}
+        observer.notifyAll(state)
 
-    def test_notify_multiple_players(self)-> None:
-        observer = GameObserver()
-        p1 = FakeObserver()
-        p2 = FakeObserver()
-        observer.register(1, p1)
-        observer.register(2, p2)
-        observer.notifyAll({
-            1: "state1",
-            2: "state2"
-        })
-        self.assertEqual(p1.last_notification, "state1")
-        self.assertEqual(p2.last_notification, "state2")
-
-    def test_does_not_crash_if_player_missing(self)-> None:
-        observer = GameObserver()
-        p1 = FakeObserver()
-        observer.register(1, p1)
-        observer.notifyAll({
-            1: "s1",
-            2: "s2"
-        })
-        self.assertEqual(p1.last_notification, "s1")
+        self.assertEqual(fake.received, "hello")
