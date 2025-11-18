@@ -15,4 +15,3 @@ class GameObserver:
         for player_id, state_string in new_state.items():
             if player_id in self.observers:
                 self.observers[player_id].notify(state_string)
-
