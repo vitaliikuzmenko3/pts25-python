@@ -1,9 +1,9 @@
 # pylint: disable=invalid-name, too-many-arguments, too-many-positional-arguments
 from __future__ import annotations
+import json   
 from enum import Enum
 from typing import List, Optional, Dict
 from terra_futura.interfaces import InterfaceCard
-import json
 
 
 class Resource(Enum):
@@ -95,12 +95,20 @@ class Card(InterfaceCard):
             "assistance": self.assistance,
             "upper_effect": {
                 "add": [r.value for r in self.upper_effect.add_resources],
-                "transform": {old.value: new.value for old, new in self.upper_effect.transform_resources_into.items()},
+                "transform": {
+    old.value: new.value
+    for old, new in self.upper_effect.transform_resources_into.items()
+},
+
                 "pollution": self.upper_effect.pollution,
             },
             "lower_effect": {
                 "add": [r.value for r in self.lower_effect.add_resources],
-                "transform": {old.value: new.value for old, new in self.lower_effect.transform_resources_into.items()},
+                "transform": {
+    old.value: new.value
+    for old, new in self.lower_effect.transform_resources_into.items()
+},
+
                 "pollution": self.lower_effect.pollution,
             },
         }
