@@ -53,12 +53,6 @@ class InterfaceCard:
         raise NotImplementedError
 
 
-class InterfaceGameObserver:
-    def activate_effect(self, card_index: int, effect_type: str = "upper") -> None:
-        raise NotImplementedError
-
-    def game_state(self) -> str:
-        raise NotImplementedError
-
-    def get_total_pollution(self) -> int:
-        raise NotImplementedError
+class ObserverInterface:
+    def notify(self, game_state: str) -> None:
+        assert False
