@@ -1,6 +1,6 @@
 # pylint: disable=invalid-name, too-many-arguments, too-many-positional-arguments
 from __future__ import annotations
-import json   
+import json
 from enum import Enum
 from typing import List, Optional, Dict
 from terra_futura.interfaces import InterfaceCard
