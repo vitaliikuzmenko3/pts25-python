@@ -3,6 +3,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import List, Optional, Dict
 from terra_futura.interfaces import InterfaceCard
+import json
 
 
 class Resource(Enum):
@@ -87,5 +88,20 @@ class Card(InterfaceCard):
         return self.assistance
 
     def state(self) -> str:
-        pol = sum(r == Resource.POLLUTION for r in self.resources)
-        return f"Resources: {self.resources}, Pollution: {pol}"
+        state = {
+            "resources": [r.value for r in self.resources],
+            "pollution": sum(r == Resource.POLLUTION for r in self.resources),
+            "pollution_limit": self.pollution_limit,
+            "assistance": self.assistance,
+            "upper_effect": {
+                "add": [r.value for r in self.upper_effect.add_resources],
+                "transform": {old.value: new.value for old, new in self.upper_effect.transform_resources_into.items()},
+                "pollution": self.upper_effect.pollution,
+            },
+            "lower_effect": {
+                "add": [r.value for r in self.lower_effect.add_resources],
+                "transform": {old.value: new.value for old, new in self.lower_effect.transform_resources_into.items()},
+                "pollution": self.lower_effect.pollution,
+            },
+        }
+        return json.dumps(state)
