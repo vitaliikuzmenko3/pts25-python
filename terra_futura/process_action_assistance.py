@@ -73,7 +73,8 @@ class ProcessActionAssistance(InterfaceProcessActionAssistance):
                 return None
             involved_cards[pos] = card
 
-        return {"involved_cards": involved_cards, "inputs_by_card": inputs_by_card}
+        return {"involved_cards": involved_cards,
+                "inputs_by_card": inputs_by_card}
 
     def _handle_pollution_transfer_reward(
         self,
@@ -136,7 +137,9 @@ class ProcessActionAssistance(InterfaceProcessActionAssistance):
         pollution: List[GridPosition]
     ) -> bool:
         """Activate a card and process assistance rewards."""
-        if not self._start_activation(card, assisting_card, assisting_player):
+        if not self._start_activation(card,
+                                      assisting_card,
+                                      assisting_player):
             return False
 
         paid_resources = [r for r, _ in inputs]
@@ -144,13 +147,13 @@ class ProcessActionAssistance(InterfaceProcessActionAssistance):
         pollution_count = len(pollution)
 
         if not self._validate_card_activation(
-        card,
-        grid,
-        assisting_card,
-        paid_resources,
-        gained_resources,
-        pollution_count
-    ):
+            card,
+            grid,
+            assisting_card,
+            paid_resources,
+            gained_resources,
+            pollution_count
+        ):
             self._current_card = None
             return False
 
@@ -162,21 +165,36 @@ class ProcessActionAssistance(InterfaceProcessActionAssistance):
         involved_cards = input_data["involved_cards"]
         inputs_by_card = input_data["inputs_by_card"]
 
-        if not self._process_pollution_cards(grid, pollution, involved_cards):
+        if not self._process_pollution_cards(grid,
+                                             pollution,
+                                             involved_cards):
             self._current_card = None
             return False
 
-        self._distribute_resources(inputs_by_card, involved_cards, gained_resources, card)
+        self._distribute_resources(
+            inputs_by_card,
+            involved_cards,
+            gained_resources,
+            card
+        )
 
         success = self._process_rewards(
-            assisting_player, assisting_card, grid, pollution, involved_cards, paid_resources
+            assisting_player,
+            assisting_card,
+            grid, pollution,
+            involved_cards,
+            paid_resources
         )
 
         self._current_card = None
         return success
 
-
-    def _start_activation(self, card, assisting_card, assisting_player) -> bool:
+    def _start_activation(
+        self,
+        card: ICard,
+        assisting_card: Optional[ICard],
+        assisting_player: int
+    ) -> bool:
         """Check basic conditions and set current card."""
         if assisting_card is None or assisting_player == 0:
             self._current_card = None
@@ -186,20 +204,30 @@ class ProcessActionAssistance(InterfaceProcessActionAssistance):
 
     def _validate_card_activation(
         self,
-        card,
-        grid,
-        assisting_card,
-        paid_resources,
-        gained_resources,
-        pollution_count
+        card: ICard,
+        grid: IGrid,
+        assisting_card: ICard,
+        paid_resources: List[Resource],
+        gained_resources: List[Resource],
+        pollution_count: int
     ) -> bool:
         """Validate card and assistance eligibility."""
         valid, _ = self._validate_and_setup(
-            card, grid, assisting_card, paid_resources, gained_resources, pollution_count
+            card,
+            grid,
+            assisting_card,
+            paid_resources,
+            gained_resources,
+            pollution_count
         )
         return valid
 
-    def _process_pollution_cards(self, grid, pollution, involved_cards) -> bool:
+    def _process_pollution_cards(
+        self,
+        grid: IGrid,
+        pollution: List[GridPosition],
+        involved_cards: Dict[GridPosition, ICard]
+    ) -> bool:
         """Add pollution cards to involved_cards and check validity."""
         for pos in pollution:
             c = grid.get_card(pos)
@@ -208,7 +236,13 @@ class ProcessActionAssistance(InterfaceProcessActionAssistance):
             involved_cards[pos] = c
         return True
 
-    def _distribute_resources(self, inputs_by_card, involved_cards, gained_resources, card) -> None:
+    def _distribute_resources(
+        self,
+        inputs_by_card: Dict[GridPosition, List[Resource]],
+        involved_cards: Dict[GridPosition, ICard],
+        gained_resources: List[Resource],
+        card: ICard
+    ) -> None:
         """Distribute resources to involved cards and the main card."""
         for pos, resources in inputs_by_card.items():
             involved_cards[pos].get_resources(resources)
@@ -216,18 +250,27 @@ class ProcessActionAssistance(InterfaceProcessActionAssistance):
 
     def _process_rewards(
         self,
-        assisting_player,
-        assisting_card,
-        grid, pollution,
-        involved_cards,
-        paid_resources
+        assisting_player: int,
+        assisting_card: ICard,
+        grid: IGrid,
+        pollution: List[GridPosition],
+        involved_cards: Dict[GridPosition, ICard],
+        paid_resources: List[Resource]
     ) -> bool:
         """Decide and apply the correct reward type."""
         is_pollution_only = len(pollution) > 0 and not paid_resources
         if is_pollution_only:
             return self._handle_pollution_transfer_reward(
-                assisting_player, assisting_card, grid, pollution, involved_cards
+                assisting_player,
+                assisting_card,
+                grid,
+                pollution,
+                involved_cards
             )
         return self._handle_standard_assistance_reward(
-            assisting_player, assisting_card, pollution, involved_cards, paid_resources
+            assisting_player,
+            assisting_card,
+            pollution,
+            involved_cards,
+            paid_resources
         )

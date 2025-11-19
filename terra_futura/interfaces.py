@@ -76,15 +76,15 @@ class InterfaceSelectReward:
         card: ICard,
         reward: List[Resource],
         mode: str
-    ):
+    ) -> None:
         """Set a reward for a player and card."""
         assert False
 
-    def can_relect_reward(self, resource: Resource) -> bool:
+    def can_select_reward(self, resource: Resource) -> bool:
         """Check if the reward can be re-selected."""
         assert False
 
-    def select_reward(self, resource: Resource):
+    def select_reward(self, resource: Resource) -> None:
         """Select a reward."""
         assert False
 
