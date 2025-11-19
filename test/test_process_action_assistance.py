@@ -87,13 +87,13 @@ class FakeReward(InterfaceSelectReward):
 
     def set_reward(
         self,
-        player_id: int,
+        player: int,
         card: ICard,
         reward: List[Resource],
         mode="assistance"
     ):
         self.calls.append({
-            "player": player_id,
+            "player": player,
             "card": card,
             "reward": reward.copy(),
             "mode": mode
