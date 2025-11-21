@@ -1,5 +1,5 @@
 # pylint: disable=too-many-arguments,too-many-positional-arguments
-"""Handles processing card actions and assistance in Terra Futura."""
+"""Handles processing card actions and assistance in Terra Futura (Assistance Mode Only)."""
 from __future__ import annotations
 from typing import List, Optional, Tuple, Dict, Any
 from terra_futura.interfaces import (
@@ -11,7 +11,7 @@ from terra_futura.interfaces import (
 from terra_futura.simple_types import GridPosition, Resource
 
 class ProcessActionAssistance(InterfaceProcessActionAssistance):
-    """Manages card activation and assistance rewards."""
+    """Manages card activation and standard assistance rewards."""
 
     _select_reward_manager: InterfaceSelectReward
     _current_card: Optional[ICard]
@@ -20,9 +20,11 @@ class ProcessActionAssistance(InterfaceProcessActionAssistance):
         """Initialize with a reward manager."""
         self._select_reward_manager = select_reward_manager
         self._current_card = None
+
     def current_card(self) -> Optional[ICard]:
         """Return the current card being processed."""
         return self._current_card
+
     def _validate_and_setup(
         self,
         card: ICard,
@@ -52,7 +54,6 @@ class ProcessActionAssistance(InterfaceProcessActionAssistance):
             paid_resources, gained_resources, pollution_count
         ):
             return False, None
-
         return True, card_coordinate
 
     def _validate_inputs(
@@ -76,34 +77,6 @@ class ProcessActionAssistance(InterfaceProcessActionAssistance):
         return {"involved_cards": involved_cards,
                 "inputs_by_card": inputs_by_card}
 
-    def _handle_pollution_transfer_reward(
-        self,
-        player: int,
-        card: ICard,
-        grid: IGrid,
-        pollution: List[GridPosition],
-        involved_cards: Dict[GridPosition, ICard]
-    ) -> bool:
-        """Handle reward when only pollution is involved."""
-        if len(pollution) != 1:
-            return False
-
-        for pos in pollution:
-            involved_cards[pos].get_resources([Resource.POLUTION])
-
-        start_card = grid.get_card(GridPosition(0, 0))
-        if start_card is None:
-            return False
-        start_card.put_resources([Resource.POLUTION])
-
-        self._select_reward_manager.set_reward(
-            player=player,
-            card=card,
-            reward=[Resource.POLUTION],
-            mode="pollution"
-        )
-        return True
-
     def _handle_standard_assistance_reward(
         self,
         player: int,
@@ -112,17 +85,15 @@ class ProcessActionAssistance(InterfaceProcessActionAssistance):
         involved_cards: Dict[GridPosition, ICard],
         paid_resources: List[Resource]
     ) -> bool:
-        """Handle normal assistance reward."""
+        """Handle normal assistance reward (reward from paid resources)."""
         for pos in pollution:
             c = involved_cards.get(pos)
             if c:
-                c.put_resources([Resource.POLUTION])
-
+                c.put_resources([Resource.POLLUTION])
         self._select_reward_manager.set_reward(
             player=player,
             card=card,
-            reward=paid_resources,
-            mode="assistance"
+            reward=paid_resources
         )
         return True
 
@@ -137,15 +108,11 @@ class ProcessActionAssistance(InterfaceProcessActionAssistance):
         pollution: List[GridPosition]
     ) -> bool:
         """Activate a card and process assistance rewards."""
-        if not self._start_activation(card,
-                                      assisting_card,
-                                      assisting_player):
+        if not self._start_activation(card, assisting_card, assisting_player):
             return False
-
         paid_resources = [r for r, _ in inputs]
         gained_resources = [r for r, _ in outputs]
         pollution_count = len(pollution)
-
         if not self._validate_card_activation(
             card,
             grid,
@@ -156,7 +123,6 @@ class ProcessActionAssistance(InterfaceProcessActionAssistance):
         ):
             self._current_card = None
             return False
-
         input_data = self._validate_inputs(grid, inputs)
         if input_data is None:
             self._current_card = None
@@ -166,29 +132,26 @@ class ProcessActionAssistance(InterfaceProcessActionAssistance):
         inputs_by_card = input_data["inputs_by_card"]
 
         if not self._process_pollution_cards(grid,
-                                             pollution,
-                                             involved_cards):
+                                              pollution,
+                                              involved_cards):
             self._current_card = None
             return False
-
         self._distribute_resources(
             inputs_by_card,
             involved_cards,
             gained_resources,
             card
         )
-
-        success = self._process_rewards(
+        success = self._handle_standard_assistance_reward(
             assisting_player,
             assisting_card,
-            grid, pollution,
+            pollution,
             involved_cards,
             paid_resources
         )
 
         self._current_card = None
         return success
-
     def _start_activation(
         self,
         card: ICard,
@@ -247,30 +210,3 @@ class ProcessActionAssistance(InterfaceProcessActionAssistance):
         for pos, resources in inputs_by_card.items():
             involved_cards[pos].get_resources(resources)
         card.put_resources(gained_resources)
-
-    def _process_rewards(
-        self,
-        assisting_player: int,
-        assisting_card: ICard,
-        grid: IGrid,
-        pollution: List[GridPosition],
-        involved_cards: Dict[GridPosition, ICard],
-        paid_resources: List[Resource]
-    ) -> bool:
-        """Decide and apply the correct reward type."""
-        is_pollution_only = len(pollution) > 0 and not paid_resources
-        if is_pollution_only:
-            return self._handle_pollution_transfer_reward(
-                assisting_player,
-                assisting_card,
-                grid,
-                pollution,
-                involved_cards
-            )
-        return self._handle_standard_assistance_reward(
-            assisting_player,
-            assisting_card,
-            pollution,
-            involved_cards,
-            paid_resources
-        )

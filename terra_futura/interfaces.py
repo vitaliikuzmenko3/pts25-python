@@ -5,6 +5,7 @@ from typing import List, Optional, Tuple
 from terra_futura.simple_types import GridPosition, Resource
 
 
+
 class InterfaceActivateGrid:
     """Interface for activating a grid pattern."""
 
@@ -74,8 +75,7 @@ class InterfaceSelectReward:
         self,
         player: int,
         card: ICard,
-        reward: List[Resource],
-        mode: str
+        reward: List[Resource]
     ) -> None:
         """Set a reward for a player and card."""
         assert False
@@ -166,4 +166,13 @@ class IPile:
 
     def state(self) -> str:
         """Return the pile state as a JSON-serializable string."""
+        assert False
+class RandomProviderInterface:
+    """Interface for random operations on the pile."""
+    def shuffle(self, _cards: List[ICard]) -> None:
+        """Shuffle the given cards in place."""
+        assert False
+
+    def pop_card(self, _cards: List[ICard]) -> Optional[ICard]:
+        """Pop a card from the given list."""
         assert False
