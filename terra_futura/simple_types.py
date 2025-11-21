@@ -42,7 +42,7 @@ class Resource(Enum):
     GEAR = 5
     CAR = 6
     MONEY = 7
-    POLUTION = 8
+    POLLUTION = 8
 
 
 class Deck(Enum):
