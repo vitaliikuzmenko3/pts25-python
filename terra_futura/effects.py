@@ -2,7 +2,8 @@
 import json
 from collections import Counter
 from typing import List, Set
-from .simple_types import Resource
+from terra_futura.simple_types import Resource
+from terra_futura.interfaces import InterfaceEffect
 
 RAW_RESOURCES: Set[Resource] = {
     Resource.GREEN,
@@ -10,7 +11,7 @@ RAW_RESOURCES: Set[Resource] = {
     Resource.YELLOW,
 }
 
-class EffectTransformationFixed:
+class EffectTransformationFixed(InterfaceEffect):
     def __init__(self, input_res: List[Resource], output_res: List[Resource], pollution: int):
         self._inputs = Counter(input_res)
         self._outputs = Counter(output_res)
@@ -23,7 +24,7 @@ class EffectTransformationFixed:
                 Counter(output) == self._outputs and
                 pollution == self._pollution)
 
-    def hasAssistance(self) -> bool:
+    def has_assistance(self) -> bool:
         return False
 
     def state(self) -> str:
@@ -35,7 +36,7 @@ class EffectTransformationFixed:
         })
 
 
-class EffectArbitraryBasic:
+class EffectArbitraryBasic(InterfaceEffect):
     def __init__(self, from_count: int, output_res: List[Resource], pollution: int):
         self._from_count = from_count
         self._outputs = Counter(output_res)
@@ -51,7 +52,7 @@ class EffectArbitraryBasic:
         return (Counter(output) == self._outputs and
                 pollution == self._pollution)
 
-    def hasAssistance(self) -> bool:
+    def has_assistance(self) -> bool:
         return False
 
     def state(self) -> str:
@@ -61,3 +62,52 @@ class EffectArbitraryBasic:
             "outputs": self._output_list,
             "pollution": self._pollution
         })
+
+class EffectOr(InterfaceEffect):
+    def __init__(self, effects: List[InterfaceEffect]):
+        self._effects = effects
+
+    def check(self, inputs: List[Resource], output: List[Resource], pollution: int) -> bool:
+        for effect in self._effects:
+            if effect.check(inputs, output, pollution):
+                return True
+        return False
+
+    def has_assistance(self) -> bool:
+        for effect in self._effects:
+            if effect.has_assistance():
+                return True
+        return False
+
+    def state(self) -> str:
+        children_states = [json.loads(e.state()) for e in self._effects]
+        return json.dumps({
+            "type": "or",
+            "options": children_states
+        })
+
+class EffectAssistance(InterfaceEffect):
+    def __init__(self) -> None:
+        pass
+
+    def check(self, inputs: List[Resource], output: List[Resource], pollution: int) -> bool:
+        return False
+
+    def has_assistance(self) -> bool:
+        return True
+
+    def state(self) -> str:
+        return json.dumps({"type": "assistance"})
+
+class EffectPollutionTransfer(InterfaceEffect):
+    def __init__(self) -> None:
+        pass
+
+    def check(self, inputs: List[Resource], output: List[Resource], pollution: int) -> bool:
+        return len(inputs) == 0 and len(output) == 0
+
+    def has_assistance(self) -> bool:
+        return False
+
+    def state(self) -> str:
+        return json.dumps({"type": "pollution_transfer"})
