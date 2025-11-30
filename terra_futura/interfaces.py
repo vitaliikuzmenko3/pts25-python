@@ -1,4 +1,4 @@
-# pylint: disable=unused-argument, duplicate-code, redefined-builtin, too-few-public-methods
+# pylint: disable=unused-argument, duplicate-code, redefined-builtin, too-many-arguments, too-many-positional-arguments
 """Interfaces for Terra Futura game entities and actions."""
 from __future__ import annotations
 from typing import List, Tuple, Optional, Protocol, TYPE_CHECKING
