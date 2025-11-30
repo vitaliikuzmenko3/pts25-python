@@ -1,3 +1,6 @@
+# test/test_move_card.py
+# pylint: disable=trailing-whitespace, missing-final-newline
+
 import unittest
 from typing import Optional, Dict
 
@@ -6,10 +9,12 @@ from terra_futura.simple_types import GridPosition
 from terra_futura.interfaces import InterfaceCard, InterfacePile, InterfaceGrid
 
 class MockCard(InterfaceCard):
+    # pylint: disable=abstract-method
     def state(self) -> str:
         return "{}"
 
 class MockPile(InterfacePile):
+    # pylint: disable=abstract-method
     def __init__(self) -> None:
         self.cards: Dict[int, InterfaceCard] = {}
 
@@ -23,6 +28,7 @@ class MockPile(InterfacePile):
         return self.cards.pop(index, None)
 
 class MockGrid(InterfaceGrid):
+    # pylint: disable=abstract-method
     def __init__(self) -> None:
         self.occupied: set[tuple[int, int]] = set()
 
