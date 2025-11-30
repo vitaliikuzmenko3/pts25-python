@@ -122,5 +122,5 @@ class GridPosition:
     def __eq__(self, other: object) -> bool:
         """Equality check."""
         if not isinstance(other, GridPosition):
-            return NotImplemented
-        return self.x == other.x and self.y == other.y
+            return False
+        return self._x == other._x and self._y == other._y
