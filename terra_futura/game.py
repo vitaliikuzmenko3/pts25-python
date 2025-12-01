@@ -146,7 +146,7 @@ class Game(TerraFuturaInterface):
                 assisting_card=other_card_obj,
                 inputs=inputs,
                 outputs=outputs,
-                pollution=pollution
+                pollution=[]
             )
             if not success:
                 return False
