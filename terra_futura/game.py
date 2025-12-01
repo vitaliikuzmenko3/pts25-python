@@ -1,15 +1,15 @@
 from typing import Dict, List, Optional, Tuple
 from enum import Enum
 
-from interfaces import TerraFuturaInterface
-from simple_types import Resource, GridPosition, CardSource, Deck, GameState
-from grid import Grid
-from select_reward import SelectReward
-from activation_pattern import ActivationPattern
-from scoring_method import ScoringMethod
-from process_action import ProcessAction
-from process_action_assistance import ProcessActionAssistance
-from pile import Pile
+from .interfaces import TerraFuturaInterface
+from .simple_types import Resource, GridPosition, CardSource, Deck, GameState
+from .grid import Grid
+from .select_reward import SelectReward
+from .activation_pattern import ActivationPattern
+from .scoring_method import ScoringMethod
+from .process_action import ProcessAction
+from .process_action_assistance import ProcessActionAssistance
+from .pile import Pile
 
 
 class Player:
