@@ -1,30 +1,40 @@
+"""
+Terra Futura: resources, positions, decks, points, game states.
+"""
 from __future__ import annotations
 from typing import List
 from enum import Enum
 
 class Points:
+    """Represents game points."""
 
     def __init__(self, value: int):
+        """Initialize points with a value."""
         self._value = value
 
     @property
     def value(self) -> int:
+        """Return the point value."""
         return self._value
 
     @staticmethod
     def sum(points_list: List["Points"]) -> "Points":
+        """Sum a list of Points."""
         return Points(sum(x.value for x in points_list))
 
     @staticmethod
     def sum_nonnegative(points_list: List["Points"]) -> "Points":
+        """Sum points, return 0 if negative."""
         total = Points.sum(points_list)
         return total if total.value >= 0 else Points(0)
 
     def __str__(self) -> str:
+        """String representation."""
         return str(self._value)
 
 
 class Resource(Enum):
+    """Game resources."""
     GREEN = 1
     RED = 2
     YELLOW = 3
@@ -36,36 +46,44 @@ class Resource(Enum):
 
 
 class Deck(Enum):
+    """Card deck identifier."""
     I = 1
     II = 2
 
 
 class CardSource:
+    """Identifies a card by deck and index."""
 
     def __init__(self, deck: Deck, index: int):
+        """Initialize with deck and index."""
         assert index >= 0, "Index CardSource init less 0"
         self._deck = deck
         self._index = index
 
     @property
     def deck(self) -> Deck:
+        """Get the deck."""
         return self._deck
 
     @deck.setter
     def deck(self, value: Deck) -> None:
+        """Set the deck."""
         self._deck = value
 
     @property
     def index(self) -> int:
+        """Get the card index."""
         return self._index
 
     @index.setter
     def index(self, value: int) -> None:
+        """Set the card index."""
         assert value >= 0, "Index CardSource less 0 setter"
         self._index = value
 
 
 class GameState(Enum):
+    """Game states."""
     TAKE_CARD_NO_CARD_DISCARDED = 1
     TAKE_CARD_CARD_DISCARDED = 2
     ACTIVATE_CARD = 3
@@ -76,26 +94,33 @@ class GameState(Enum):
 
 
 class GridPosition:
+    """Position on the grid."""
 
     def __init__(self, x: int, y: int):
+        """Initialize with coordinates."""
         self._x = x
         self._y = y
 
     @property
     def x(self) -> int:
+        """X coordinate."""
         return self._x
 
     @property
     def y(self) -> int:
+        """Y coordinate."""
         return self._y
 
     def __str__(self) -> str:
+        """String representation."""
         return f"({self._x},{self._y})"
 
     def __hash__(self) -> int:
+        """Hash for using in sets/dicts."""
         return hash((self._x, self._y))
 
     def __eq__(self, other: object) -> bool:
+        """Equality check."""
         if not isinstance(other, GridPosition):
-            return NotImplemented
-        return self.x == other.x and self.y == other.y
+            return False
+        return self._x == other._x and self._y == other._y
