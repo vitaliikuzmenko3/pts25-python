@@ -1,4 +1,4 @@
-# pylint: disable=too-many-instance-attributes, too-many-public-methods, duplicate-code
+# pylint: disable=too-many-instance-attributes, too-many-public-methods, duplicate-code, invalid-name
 import unittest
 from collections import Counter
 from typing import List, Tuple, Dict, Optional
@@ -26,8 +26,12 @@ class FakeEffect(InterfaceEffect):
                 Counter(output) == self._outputs and
                 pollution == self._pollution)
 
-    def hasAssistance(self) -> bool:
+    def has_assistance(self) -> bool:
         return False
+
+    def state(self) -> str:
+        return "{}"
+
 class FakeCard(InterfaceCard):
     def __init__(self,
                  pos: GridPosition,
@@ -39,7 +43,7 @@ class FakeCard(InterfaceCard):
         self._lower_effect = lower_effect
         self._resources = Counter(initial_resources)
         self._is_active = True
-        self.pollution_added_count = 0
+        self._current_pollution = 0
 
     def get_position(self) -> GridPosition:
         return self._pos
@@ -50,49 +54,60 @@ class FakeCard(InterfaceCard):
     def set_active(self, status: bool) -> None:
         self._is_active = status
 
-    def canGetResources(self, resources: List[Resource]) -> bool:
+    def can_get_resources(self, resources: List[Resource]) -> bool:
         needed = Counter(resources)
         for res, count in needed.items():
             if self._resources[res] < count:
                 return False
         return True
 
-    def getResources(self, resources: List[Resource]) -> None:
+    def get_resources(self, resources: List[Resource]) -> None:
         for res in resources:
             if self._resources[res] <= 0:
                 raise ValueError("Attempt to delete non-existent resource")
             self._resources[res] -= 1
 
-    def canPutResources(self, resources: List[Resource]) -> bool:
+    def can_put_resources(self, resources: List[Resource]) -> bool:
         return True
 
-    def putResources(self, resources: List[Resource]) -> None:
-        self._resources.update(resources)
+    def put_resources(self, resources: List[Resource]) -> None:
+        for r in resources:
+            if r == Resource.POLLUTION:
+                self._current_pollution += 1
+            else:
+                self._resources[r] += 1
 
-    def checkInput(self, inputs: List[Resource], output: List[Resource], polution: int) -> bool:
+    def check(self, inputs: List[Resource], output: List[Resource], pollution: int) -> bool:
         if self._upper_effect is None:
             return False
-        return self._upper_effect.check(inputs, output, polution)
+        return self._upper_effect.check(inputs, output, pollution)
 
-    def checkLower(self, inputs: List[Resource], output: List[Resource], polution: int) -> bool:
+    def check_lower(self, inputs: List[Resource], output: List[Resource], pollution: int) -> bool:
         if self._lower_effect is None:
             return False
-        return self._lower_effect.check(inputs, output, polution)
+        return self._lower_effect.check(inputs, output, pollution)
 
-    def add_pollution(self) -> None:
-        self.pollution_added_count += 1
+    def has_assistance(self) -> bool:
+        return False
+
+    def state(self) -> str:
+        return "{}"
 
     def get_resource_count(self, resource: Resource) -> int:
         return self._resources[resource]
+
+    def get_pollution_count(self) -> int:
+        return self._current_pollution
+
 class FakeGrid(InterfaceGrid):
     def __init__(self) -> None:
         self._cards: Dict[Tuple[int, int], FakeCard] = {}
 
-    def getCard(self, coordinate: GridPosition) -> Optional[InterfaceCard]:
+    def get_card(self, coordinate: GridPosition) -> Optional[InterfaceCard]:
         return self._cards.get((coordinate.x, coordinate.y))
 
-    def canBeActivated(self, coordinate: GridPosition) -> bool:
-        card = self.getCard(coordinate)
+    def can_be_activated(self, coordinate: GridPosition) -> bool:
+        card = self.get_card(coordinate)
         return card is not None and card.is_active()
 
     def add_card(self, card: FakeCard) -> None:
@@ -131,7 +146,7 @@ class TestProcessAction(unittest.TestCase):
         self.grid.add_card(self.card_b)
 
     def test_success_simple_action(self) -> None:
-        result = self.process_action.activateCard(
+        result = self.process_action.activate_card(
             self.card_b, self.grid,
             self.player_inputs, self.player_outputs, self.player_pollution
         )
@@ -139,13 +154,13 @@ class TestProcessAction(unittest.TestCase):
         self.assertTrue(result)
         self.assertEqual(self.card_a.get_resource_count(Resource.RED), 0)
         self.assertEqual(self.card_a.get_resource_count(Resource.GREEN), 1)
-        self.assertEqual(self.card_a.pollution_added_count, 1)
+        self.assertEqual(self.card_a.get_pollution_count(), 1)
         self.assertEqual(self.card_b.get_resource_count(Resource.CAR), 1)
 
     def test_fail_if_card_to_activate_is_inactive(self) -> None:
         self.card_b.set_active(False)
 
-        result = self.process_action.activateCard(
+        result = self.process_action.activate_card(
             self.card_b, self.grid,
             self.player_inputs, self.player_outputs, self.player_pollution
         )
@@ -157,7 +172,7 @@ class TestProcessAction(unittest.TestCase):
     def test_fail_if_input_card_is_inactive(self) -> None:
         self.card_a.set_active(False)
 
-        result = self.process_action.activateCard(
+        result = self.process_action.activate_card(
             self.card_b, self.grid,
             self.player_inputs, self.player_outputs, self.player_pollution
         )
@@ -169,7 +184,7 @@ class TestProcessAction(unittest.TestCase):
     def test_fail_if_pollution_target_is_inactive(self) -> None:
         self.card_a.set_active(False)
 
-        result = self.process_action.activateCard(
+        result = self.process_action.activate_card(
             self.card_b, self.grid,
             self.player_inputs, self.player_outputs, self.player_pollution
         )
@@ -184,7 +199,7 @@ class TestProcessAction(unittest.TestCase):
             (Resource.GREEN, self.pos_a)
         ]
 
-        result = self.process_action.activateCard(
+        result = self.process_action.activate_card(
             self.card_b, self.grid,
             player_inputs_expensive, self.player_outputs, self.player_pollution
         )
@@ -200,7 +215,7 @@ class TestProcessAction(unittest.TestCase):
             (Resource.RED, self.pos_a)
         ]
 
-        result2 = self.process_action.activateCard(
+        result2 = self.process_action.activate_card(
             self.card_b, self.grid,
             player_inputs_3red, self.player_outputs, self.player_pollution
         )
@@ -210,7 +225,7 @@ class TestProcessAction(unittest.TestCase):
     def test_fail_invalid_effect_transaction(self) -> None:
         invalid_inputs = [(Resource.RED, self.pos_a), (Resource.GREEN, self.pos_a)]
 
-        result = self.process_action.activateCard(
+        result = self.process_action.activate_card(
             self.card_b, self.grid, invalid_inputs, self.player_outputs, self.player_pollution
         )
         self.assertFalse(result)
@@ -219,7 +234,7 @@ class TestProcessAction(unittest.TestCase):
     def test_fail_output_to_wrong_card(self) -> None:
         invalid_outputs = [(Resource.CAR, self.pos_a)]
 
-        result = self.process_action.activateCard(
+        result = self.process_action.activate_card(
             self.card_b, self.grid,
             self.player_inputs, invalid_outputs, self.player_pollution
         )
@@ -237,14 +252,14 @@ class TestProcessAction(unittest.TestCase):
         player_outputs_gain: List[Tuple[Resource, GridPosition]] = [(Resource.GREEN, self.pos_b)]
         player_pollution_gain: List[GridPosition] = []
 
-        result = self.process_action.activateCard(
+        result = self.process_action.activate_card(
             self.card_b, self.grid,
             player_inputs_gain, player_outputs_gain, player_pollution_gain
         )
 
         self.assertTrue(result)
         self.assertEqual(self.card_b.get_resource_count(Resource.GREEN), 1)
-        self.assertEqual(self.card_a.pollution_added_count, 0)
+        self.assertEqual(self.card_a.get_pollution_count(), 0)
 
 if __name__ == "__main__":
     unittest.main()
