@@ -1,7 +1,7 @@
 # pylint: disable=unused-argument, duplicate-code, redefined-builtin
 from typing import Protocol
 from typing import List, Tuple, TYPE_CHECKING, Optional
-from terra_futura.simple_types import Resource
+from terra_futura.simple_types import Resource, GridPosition
 if TYPE_CHECKING:
     from terra_futura.card import Card
 
@@ -72,3 +72,17 @@ class InterfaceEffect(Protocol):
 
     def state(self) -> str:
         raise NotImplementedError
+
+class InterfaceGrid:
+    def can_put_card(self, coordinate: "GridPosition") -> bool:
+        assert False
+
+    def put_card(self, coordinate: "GridPosition", card: "InterfaceCard") -> None:
+        assert False
+
+class InterfacePile:
+    def get_card(self, index: int) -> Optional["InterfaceCard"]:
+        assert False
+
+    def take_card(self, index: int) -> Optional["InterfaceCard"]:
+        assert False
