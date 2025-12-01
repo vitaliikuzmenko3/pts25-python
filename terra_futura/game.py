@@ -251,22 +251,29 @@ class Game(TerraFuturaInterface):
             return False
         if player_id not in self.players:
             return False
-
+    
         player = self.players[player_id]
-
-        if card < 0 or card >= len(player.activation_patterns):
+    
+        if not (0 <= card < len(player.activation_patterns)):
             return False
         if player.selected_pattern is not None:
             return False
-
+    
         pattern_obj = player.activation_patterns[card]
         pattern_obj.select()
         player.selected_pattern = pattern_obj
-
-        self._cards_to_activate = pattern_obj._pattern.copy()
+    
+        pattern_cards = pattern_obj._pattern.copy()
+    
+        if len(pattern_cards) == 0:
+            self._activation_complete = True
+            return self.turn_finished(player_id)
+    
+        self._cards_to_activate = pattern_cards
         self._activation_complete = False
         self.state = GameState.ACTIVATE_CARD
         return True
+
 
     def select_scoring(self, player_id: int, card: int) -> bool:
         if self.state != GameState.SELECT_SCORING_METHOD:
