@@ -54,12 +54,12 @@ class TestEffects(unittest.TestCase):
             EffectTransformationFixed([], [], 0),
             EffectAssistance()
         ])
-        self.assertTrue(effect.hasAssistance())
+        self.assertTrue(effect.has_assistance())
 
         effect_clean = EffectOr([
             EffectTransformationFixed([], [], 0)
         ])
-        self.assertFalse(effect_clean.hasAssistance())
+        self.assertFalse(effect_clean.has_asistance())
 
     def test_state_json(self) -> None:
         eff = EffectTransformationFixed([Resource.RED], [Resource.CAR], 1)
@@ -83,7 +83,7 @@ class TestEffects(unittest.TestCase):
         start_card_effect = EffectOr([gain_any, assistance])
         self.assertTrue(start_card_effect.check([], [Resource.RED], 0))
         self.assertTrue(start_card_effect.check([], [Resource.MONEY], 0))
-        self.assertTrue(start_card_effect.hasAssistance())
+        self.assertTrue(start_card_effect.has_assistance())
 
 if __name__ == "__main__":
     unittest.main()
