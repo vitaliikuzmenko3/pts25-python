@@ -53,6 +53,12 @@ class InterfaceCard:
     def state(self) -> str:
         raise NotImplementedError
 
+    def is_active(self) -> bool:
+        raise NotImplementedError
+
+    def get_position(self) -> GridPosition:
+        raise NotImplementedError
+
 
 class ObserverInterface:
     def notify(self, game_state: str) -> None:
@@ -78,6 +84,12 @@ class InterfaceGrid:
         assert False
 
     def put_card(self, coordinate: "GridPosition", card: "InterfaceCard") -> None:
+        assert False
+
+    def get_card(self, coordinate: "GridPosition") -> Optional["InterfaceCard"]:
+        assert False
+
+    def can_be_activated(self, coordinate: "GridPosition") -> bool:
         assert False
 
 class InterfacePile:
