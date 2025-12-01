@@ -1,3 +1,6 @@
+"""
+Terra Futura: resources, positions, decks, points, game states.
+"""
 from __future__ import annotations
 from typing import List
 from enum import Enum
@@ -25,6 +28,7 @@ class Points:
 
 
 class Resource(Enum):
+    """Game resources."""
     GREEN = 1
     RED = 2
     YELLOW = 3
@@ -36,6 +40,7 @@ class Resource(Enum):
 
 
 class Deck(Enum):
+    """Card deck identifier."""
     I = 1
     II = 2
 
@@ -49,6 +54,7 @@ class CardSource:
 
     @property
     def deck(self) -> Deck:
+        """Get the deck."""
         return self._deck
 
     @deck.setter
@@ -57,6 +63,7 @@ class CardSource:
 
     @property
     def index(self) -> int:
+        """Get the card index."""
         return self._index
 
     @index.setter
@@ -66,6 +73,7 @@ class CardSource:
 
 
 class GameState(Enum):
+    """Game states."""
     TAKE_CARD_NO_CARD_DISCARDED = 1
     TAKE_CARD_CARD_DISCARDED = 2
     ACTIVATE_CARD = 3
