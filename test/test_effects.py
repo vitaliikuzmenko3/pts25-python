@@ -59,7 +59,7 @@ class TestEffects(unittest.TestCase):
         effect_clean = EffectOr([
             EffectTransformationFixed([], [], 0)
         ])
-        self.assertFalse(effect_clean.has_asistance())
+        self.assertFalse(effect_clean.has_assistance())
 
     def test_state_json(self) -> None:
         eff = EffectTransformationFixed([Resource.RED], [Resource.CAR], 1)
