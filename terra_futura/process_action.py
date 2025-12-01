@@ -6,7 +6,7 @@ from .interfaces import InterfaceCard, InterfaceGrid
 class ProcessAction:
     def __init__(self) -> None:
         pass
-    def activateCard(
+    def activate_card(
         self,
         card: InterfaceCard,
         grid: InterfaceGrid,
@@ -29,15 +29,15 @@ class ProcessAction:
         out_involved_cards: Dict[GridPosition, InterfaceCard]
     ) -> bool:
         card_pos = card_to_activate.get_position()
-        if not grid.canBeActivated(card_pos):
+        if not grid.can_be_activated(card_pos):
             return False
         out_involved_cards[card_pos] = card_to_activate
         input_resources = [res for res, _ in inputs]
         output_resources = [res for res, _ in outputs]
         pollution_count = len(pollution)
-        is_valid_effect = card_to_activate.checkInput(
+        is_valid_effect = card_to_activate.check(
             input_resources, output_resources, pollution_count
-        ) or card_to_activate.checkLower(
+        ) or card_to_activate.check_lower(
             input_resources, output_resources, pollution_count
         )
         if not is_valid_effect:
@@ -51,19 +51,19 @@ class ProcessAction:
                 inputs_by_card[pos] = []
             inputs_by_card[pos].append(res)
         for pos, resources_needed in inputs_by_card.items():
-            input_card = grid.getCard(pos)
+            input_card = grid.get_card(pos)
             if input_card is None:
                 return False
-            if not grid.canBeActivated(pos):
+            if not input_card.is_active():
                 return False
-            if not input_card.canGetResources(resources_needed):
+            if not input_card.can_get_resources(resources_needed):
                 return False
             out_involved_cards[pos] = input_card
         for pos in pollution:
-            pollution_card = grid.getCard(pos)
+            pollution_card = grid.get_card(pos)
             if pollution_card is None:
                 return False
-            if not grid.canBeActivated(pos):
+            if not pollution_card.is_active():
                 return False
             out_involved_cards[pos] = pollution_card
         return True
@@ -81,9 +81,9 @@ class ProcessAction:
                 inputs_by_card[pos] = []
             inputs_by_card[pos].append(res)
         for pos, resources_to_spend in inputs_by_card.items():
-            involved_cards[pos].getResources(resources_to_spend)
+            involved_cards[pos].get_resources(resources_to_spend)
         output_resources = [res for res, _ in outputs]
         if output_resources:
-            card_to_activate.putResources(output_resources)
+            card_to_activate.put_resources(output_resources)
         for pos in pollution:
-            involved_cards[pos].add_pollution()
+            involved_cards[pos].put_resources([Resource.POLLUTION])
