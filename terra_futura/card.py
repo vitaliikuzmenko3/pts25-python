@@ -67,8 +67,19 @@ class Card(InterfaceCard):
     def has_assistance(self) -> bool:
         return self.assistance
 
+    def get_position(self) -> GridPosition:
+        return self._pos
+
+    def set_position(self, pos: GridPosition) -> None:
+        self._pos = pos
+
+    def is_active(self) -> bool:
+        pol_count = sum(r == Resource.POLLUTION for r in self.resources)
+        return pol_count <= self.pollution_limit
+
     def state(self) -> str:
         return json.dumps({
+            "pos": str(self._pos),
             "resources": [r.value for r in self.resources],
             "pollution": sum(r == Resource.POLLUTION for r in self.resources),
             "pollution_limit": self.pollution_limit,
