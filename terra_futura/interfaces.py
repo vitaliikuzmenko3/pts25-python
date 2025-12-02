@@ -209,7 +209,7 @@ class TerraFuturaInterface:
 
     def activate_card(
             self,
-            playerId: int,
+            player_id: int,
             card: GridPosition,
             inputs: List[tuple[Resource, GridPosition]],
             outputs: List[tuple[Resource, GridPosition]],
