@@ -50,7 +50,7 @@ class TestCardWithEffects(unittest.TestCase):
         card = Card([Resource.RED], 5, upperEffect=effect)
         self.assertTrue(card.check(
             inputs=[Resource.RED],
-            output=[Resource.MONEY],
+            outputs=[Resource.MONEY],
             pollution=0
         ))
 
@@ -62,7 +62,7 @@ class TestCardWithEffects(unittest.TestCase):
 
         self.assertFalse(card.check(
             inputs=[Resource.GREEN],
-            output=[Resource.MONEY],
+            outputs=[Resource.MONEY],
             pollution=0
         ))
 
@@ -73,7 +73,7 @@ class TestCardWithEffects(unittest.TestCase):
         card = Card([Resource.RED, Resource.GREEN], 5, lowerEffect=effect)
         self.assertTrue(card.check_lower(
             inputs=[Resource.RED, Resource.GREEN],
-            output=[Resource.MONEY],
+            outputs=[Resource.MONEY],
             pollution=0
         ))
 
@@ -84,7 +84,7 @@ class TestCardWithEffects(unittest.TestCase):
         card = Card([Resource.RED, Resource.GREEN], 5, lowerEffect=effect)
         self.assertFalse(card.check_lower(
             inputs=[Resource.RED],
-            output=[Resource.MONEY],
+            outputs=[Resource.MONEY],
             pollution=0
         ))
 
@@ -97,17 +97,17 @@ class TestCardOrEffect(unittest.TestCase):
         card = Card([Resource.RED], 5, upperEffect=effect_or)
         self.assertTrue(card.check(
             inputs=[Resource.RED],
-            output=[Resource.GREEN],
+            outputs=[Resource.GREEN],
             pollution=0
         ))
         self.assertTrue(card.check(
             inputs=[Resource.YELLOW],
-            output=[Resource.MONEY],
+            outputs=[Resource.MONEY],
             pollution=0
         ))
         self.assertFalse(card.check(
             inputs=[Resource.GREEN],
-            output=[Resource.YELLOW],
+            outputs=[Resource.YELLOW],
             pollution=0
         ))
 

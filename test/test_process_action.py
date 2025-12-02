@@ -77,15 +77,15 @@ class FakeCard(InterfaceCard):
             else:
                 self._resources[r] += 1
 
-    def check(self, inputs: List[Resource], output: List[Resource], pollution: int) -> bool:
+    def check(self, inputs: List[Resource], outputs: List[Resource], pollution: int) -> bool:
         if self._upper_effect is None:
             return False
-        return self._upper_effect.check(inputs, output, pollution)
+        return self._upper_effect.check(inputs, outputs, pollution)
 
-    def check_lower(self, inputs: List[Resource], output: List[Resource], pollution: int) -> bool:
+    def check_lower(self, inputs: List[Resource], outputs: List[Resource], pollution: int) -> bool:
         if self._lower_effect is None:
             return False
-        return self._lower_effect.check(inputs, output, pollution)
+        return self._lower_effect.check(inputs, outputs, pollution)
 
     def has_assistance(self) -> bool:
         return False

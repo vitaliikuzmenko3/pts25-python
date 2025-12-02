@@ -23,59 +23,13 @@ class TerraFuturaObserverInterface:
         assert False
 
 
-class ICard:
-    """Interface for a game card."""
-
-    def can_get_resources(self, resources: List[Resource]) -> bool:
-        """Check if the card can give the specified resources."""
-        assert False
-
-    def get_resources(self, resources: List[Resource]) -> None:
-        """Obtain the specified resources from the card."""
-        assert False
-
-    def can_put_resources(self, resources: List[Resource]) -> bool:
-        """Check if the specified resources can be placed on the card."""
-        assert False
-
-    def put_resources(self, resources: List[Resource]) -> None:
-        """Place the specified resources on the card."""
-        assert False
-
-    def check(
-        self,
-        inputs: List[Resource],
-        outputs: List[Resource],
-        pollution: int
-    ) -> bool:
-        """Check if the card operation is valid."""
-        assert False
-
-    def check_lower(
-        self,
-        inputs: List[Resource],
-        outputs: List[Resource],
-        pollution: int
-    ) -> bool:
-        """Check a lower-level card operation."""
-        assert False
-
-    def has_assistance(self) -> bool:
-        """Return True if the card has assistance applied."""
-        assert False
-
-    def state(self) -> str:
-        """Return the card state as a JSON-serializable string."""
-        assert False
-
-
 class InterfaceSelectReward:
     """Interface for selecting and setting rewards."""
 
     def set_reward(
         self,
         player: int,
-        card: ICard,
+        card: InterfaceCard,
         reward: List[Resource]
     ) -> None:
         """Set a reward for a player and card."""
@@ -99,10 +53,10 @@ class InterfaceProcessActionAssistance:
 
     def activate_card(
         self,
-        card: ICard,
-        grid: IGrid,
+        card: InterfaceCard,
+        grid: InterfaceGrid,
         assisting_player: int,
-        assisting_card: ICard,
+        assisting_card: InterfaceCard,
         inputs: List[Tuple[Resource, GridPosition]],
         outputs: List[Tuple[Resource, GridPosition]],
         pollution: List[GridPosition]
@@ -110,71 +64,13 @@ class InterfaceProcessActionAssistance:
         """Activate a card with assistance applied."""
         assert False
 
-
-class IGrid:
-    """Interface for the game grid."""
-
-    def get_card(self, coordinate: GridPosition) -> Optional[ICard]:
-        """Get a card at the given coordinate."""
-        assert False
-
-    def can_put_card(self, coordinate: GridPosition) -> bool:
-        """Check if a card can be placed at the coordinate."""
-        assert False
-
-    def put_card(self, coordinate: GridPosition, card: ICard) -> None:
-        """Place a card at the given coordinate."""
-        assert False
-
-    def can_be_activated(self, coordinate: GridPosition) -> bool:
-        """Check if a card at the coordinate can be activated."""
-        assert False
-
-    def set_activated(self, coordinate: GridPosition) -> None:
-        """Mark the card at the coordinate as activated."""
-        assert False
-
-    def set_activation_pattern(
-        self,
-        pattern: List[GridPosition]
-    ) -> None:
-        """Set an activation pattern on the grid."""
-        assert False
-
-    def end_turn(self) -> None:
-        """End the current turn."""
-        assert False
-
-    def state(self) -> str:
-        """Return the grid state as a JSON-serializable string."""
-        assert False
-
-
-class IPile:
-    """Interface for a pile of cards."""
-
-    def get_card(self, index: int) -> Optional[ICard]:
-        """Get a card at the specified index."""
-        assert False
-
-    def take_card(self, index: int) -> Optional[ICard]:
-        """Take a card from the specified index."""
-        assert False
-
-    def remove_last_card(self) -> Optional[ICard]:
-        """Remove the last visible card and move it to the discard pile."""
-        assert False
-
-    def state(self) -> str:
-        """Return the pile state as a JSON-serializable string."""
-        assert False
 class RandomProviderInterface:
     """Interface for random operations on the pile."""
-    def shuffle(self, _cards: List[ICard]) -> None:
+    def shuffle(self, _cards: List[InterfaceCard]) -> None:
         """Shuffle the given cards in place."""
         assert False
 
-    def pop_card(self, _cards: List[ICard]) -> Optional[ICard]:
+    def pop_card(self, _cards: List[InterfaceCard]) -> Optional[InterfaceCard]:
         """Pop a card from the given list."""
         assert False
 
@@ -187,39 +83,39 @@ class InterfaceCard:
     lower_effect: Optional["InterfaceEffect"]
     pollution_limit: int
 
-    def can_get_resources(self, resources: List["Resource"]) -> bool:
-        raise NotImplementedError
+    def can_get_resources(self, resources: List[Resource]) -> bool:
+        assert False
 
-    def get_resources(self, resources: List["Resource"]) -> None:
-        raise NotImplementedError
+    def get_resources(self, resources: List[Resource]) -> None:
+        assert False
 
-    def can_put_resources(self, resources: List["Resource"]) -> bool:
-        raise NotImplementedError
+    def can_put_resources(self, resources: List[Resource]) -> bool:
+        assert False
 
-    def put_resources(self, resources: List["Resource"]) -> None:
-        raise NotImplementedError
+    def put_resources(self, resources: List[Resource]) -> None:
+        assert False
 
     def check(
-            self,
-            inputs: List["Resource"],
-            output: List["Resource"],
-            pollution: int
+        self,
+        inputs: List[Resource],
+        outputs: List[Resource],
+        pollution: int
     ) -> bool:
-        raise NotImplementedError
+        assert False
 
     def check_lower(
-            self,
-            inputs: List["Resource"],
-            output: List["Resource"],
-            pollution: int
+        self,
+        inputs: List[Resource],
+        outputs: List[Resource],
+        pollution: int
     ) -> bool:
-        raise NotImplementedError
+        assert False
 
     def has_assistance(self) -> bool:
-        raise NotImplementedError
+        assert False
 
     def state(self) -> str:
-        raise NotImplementedError
+        assert False
 
     def is_active(self) -> bool:
         raise NotImplementedError
@@ -248,21 +144,58 @@ class InterfaceEffect(Protocol):
         raise NotImplementedError
 
 class InterfaceGrid:
-    def can_put_card(self, coordinate: "GridPosition") -> bool:
+    """Interface for the game grid."""
+
+    def get_card(self, coordinate: GridPosition) -> Optional[InterfaceCard]:
+        """Get a card at the given coordinate."""
         assert False
 
-    def put_card(self, coordinate: "GridPosition", card: "InterfaceCard") -> None:
+    def can_put_card(self, coordinate: GridPosition) -> bool:
+        """Check if a card can be placed at the coordinate."""
         assert False
 
-    def get_card(self, coordinate: "GridPosition") -> Optional["InterfaceCard"]:
+    def put_card(self, coordinate: GridPosition, card: InterfaceCard) -> None:
+        """Place a card at the given coordinate."""
         assert False
 
-    def can_be_activated(self, coordinate: "GridPosition") -> bool:
+    def can_be_activated(self, coordinate: GridPosition) -> bool:
+        """Check if a card at the coordinate can be activated."""
+        assert False
+
+    def set_activated(self, coordinate: GridPosition) -> None:
+        """Mark the card at the coordinate as activated."""
+        assert False
+
+    def set_activation_pattern(
+        self,
+        pattern: List[GridPosition]
+    ) -> None:
+        """Set an activation pattern on the grid."""
+        assert False
+
+    def end_turn(self) -> None:
+        """End the current turn."""
+        assert False
+
+    def state(self) -> str:
+        """Return the grid state as a JSON-serializable string."""
         assert False
 
 class InterfacePile:
-    def get_card(self, index: int) -> Optional["InterfaceCard"]:
+    """Interface for a pile of cards."""
+
+    def get_card(self, index: int) -> Optional[InterfaceCard]:
+        """Get a card at the specified index."""
         assert False
 
-    def take_card(self, index: int) -> Optional["InterfaceCard"]:
+    def take_card(self, index: int) -> Optional[InterfaceCard]:
+        """Take a card from the specified index."""
+        assert False
+
+    def remove_last_card(self) -> Optional[InterfaceCard]:
+        """Remove the last visible card and move it to the discard pile."""
+        assert False
+
+    def state(self) -> str:
+        """Return the pile state as a JSON-serializable string."""
         assert False
