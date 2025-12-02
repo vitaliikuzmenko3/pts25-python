@@ -19,7 +19,7 @@ class FakeEffect(InterfaceEffect):
     def check(
         self,
         inputs: List[Resource],
-        outputs: List[Resource],
+        output: List[Resource],
         pollution: int
     ) -> bool:
         return (Counter(inputs) == self._inputs and
