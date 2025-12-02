@@ -54,7 +54,7 @@ class InterfaceProcessActionAssistance:
     def activate_card(
         self,
         card: InterfaceCard,
-        grid: IGrid,
+        grid: InterfaceGrid,
         assisting_player: int,
         assisting_card: InterfaceCard,
         inputs: List[Tuple[Resource, GridPosition]],
