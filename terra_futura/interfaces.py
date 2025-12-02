@@ -204,7 +204,7 @@ class TerraFuturaInterface:
                  destination: GridPosition) -> bool:
         raise NotImplementedError
 
-    def discard_last_card_from_deck(self, playerId: int, deck: CardSource) -> bool:
+    def discard_last_card_from_deck(self, player_id: int, deck: CardSource) -> bool:
         raise NotImplementedError
 
     def activate_card(
