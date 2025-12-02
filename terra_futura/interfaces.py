@@ -2,7 +2,7 @@
 """Interfaces for Terra Futura game entities and actions."""
 from __future__ import annotations
 from typing import List, Tuple, Optional, Protocol, TYPE_CHECKING
-from terra_futura.simple_types import GridPosition, Resource
+from terra_futura.simple_types import GridPosition, Resource, CardSource
 
 if TYPE_CHECKING:
     from terra_futura.card import Card
@@ -200,7 +200,7 @@ class InterfacePile:
         """Return the pile state as a JSON-serializable string."""
         assert False
 class TerraFuturaInterface:
-    def take_card(self, playerId: int, source: CardSource,
+    def take_card(self, player_id: int, source: CardSource,
                  destination: GridPosition) -> bool:
         raise NotImplementedError
 
@@ -214,21 +214,21 @@ class TerraFuturaInterface:
             inputs: List[tuple[Resource, GridPosition]],
             outputs: List[tuple[Resource, GridPosition]],
             pollution: List[GridPosition],
-            otherPlayerId: Optional[int],
-            otherCard: Optional[GridPosition],
+            other_player_id: Optional[int],
+            other_card: Optional[GridPosition],
     ) -> bool:
         raise NotImplementedError
 
-    def select_reward(self, playerId: int, resource: Resource) -> bool:
+    def select_reward(self, player_id: int, resource: Resource) -> bool:
         raise NotImplementedError
 
-    def turn_finished(self, playerId: int) -> bool:
+    def turn_finished(self, player_id: int) -> bool:
         raise NotImplementedError
 
-    def select_activation_pattern(self, playerId: int, card: int) -> bool:
+    def select_activation_pattern(self, player_id: int, card: int) -> bool:
         raise NotImplementedError
 
-    def select_scoring(self, playerId: int, card: int) -> bool:
+    def select_scoring(self, player_id: int, card: int) -> bool:
         raise NotImplementedError
 
     def state(self) -> str:
