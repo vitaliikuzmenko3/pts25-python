@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from typing import List, Optional
 from terra_futura.interfaces import InterfaceCard, InterfaceEffect
-from terra_futura.simple_types import Resource, GridPosition
+from terra_futura.simple_types import Resource
 
 
 class Card(InterfaceCard):
@@ -14,14 +14,12 @@ class Card(InterfaceCard):
         assistance: bool = False,
         upperEffect: Optional[InterfaceEffect] = None,
         lowerEffect: Optional[InterfaceEffect] = None,
-        pos: GridPosition = GridPosition(0, 0)
     ):
         self.resources = resources.copy()
         self.pollution_limit = pollutionSpacesL
         self.assistance = assistance
         self.upper_effect = upperEffect
         self.lower_effect = lowerEffect
-        self._pos = pos
 
     def can_get_resources(self, resources: List[Resource]) -> bool:
         temp = self.resources.copy()
@@ -68,16 +66,6 @@ class Card(InterfaceCard):
 
     def has_assistance(self) -> bool:
         return self.assistance
-
-    def get_position(self) -> GridPosition:
-        return self._pos
-
-    def set_position(self, pos: GridPosition) -> None:
-        self._pos = pos
-
-    def is_active(self) -> bool:
-        pol_count = sum(r == Resource.POLLUTION for r in self.resources)
-        return pol_count <= self.pollution_limit
 
     def state(self) -> str:
         return json.dumps({
