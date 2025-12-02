@@ -10,27 +10,27 @@ class FakeCard(InterfaceCard):
     """Fake card implementing InterfaceCard for testing."""
 
     def __init__(self, has_assistance: bool = True, can_activate: bool = True) -> None:
-        self.resources: Dict[Resource, int] = {}
+        self.resources: List[Resource] = []
         self._has_assistance = has_assistance
         self._can_activate = can_activate
         self.get_calls: List[List[Resource]] = []
         self.put_calls: List[List[Resource]] = []
 
     def can_get_resources(self, resources: List[Resource]) -> bool:
-        return all(self.resources.get(r, 0) > 0 for r in resources)
+        return all(self.resources.count(r) > 0 for r in resources)
+
 
     def get_resources(self, resources: List[Resource]) -> None:
         self.get_calls.append(resources.copy())
         for r in resources:
-            self.resources[r] = self.resources.get(r, 0) - 1
+            self.resources.remove(r)
 
     def can_put_resources(self, resources: List[Resource]) -> bool:
         return True
 
     def put_resources(self, resources: List[Resource]) -> None:
         self.put_calls.append(resources.copy())
-        for r in resources:
-            self.resources[r] = self.resources.get(r, 0) + 1
+        self.resources.extend(resources)
 
     def check(self, inputs: List[Resource], outputs: List[Resource], pollution: int) -> bool:
         return self._can_activate
@@ -45,7 +45,8 @@ class FakeCard(InterfaceCard):
         return "FakeCard"
 
     def add(self, resource: Resource, count: int = 1) -> None:
-        self.resources[resource] = self.resources.get(resource, 0) + count
+        for _ in range(count):
+            self.resources.append(resource)
 
 
 class FakeGrid(InterfaceGrid):

@@ -50,7 +50,7 @@ class Card(InterfaceCard):
 
     def check(self,
     inputs: List[Resource],
-    output: List[Resource],
+    outputs: List[Resource],
     pollution: int) -> bool:
         return (
             self.upper_effect is not None and
@@ -59,7 +59,7 @@ class Card(InterfaceCard):
 
     def check_lower(self,
     inputs: List[Resource],
-    output: List[Resource],
+    outputs: List[Resource],
     pollution: int) -> bool:
         return (
             self.lower_effect is not None and
