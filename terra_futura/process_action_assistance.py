@@ -5,8 +5,8 @@ from typing import List, Optional, Tuple, Dict, Any
 from terra_futura.interfaces import (
     InterfaceProcessActionAssistance,
     InterfaceSelectReward,
-    IGrid,
-    ICard
+    InterfaceGrid,
+    InterfaceCard
 )
 from terra_futura.simple_types import GridPosition, Resource
 
@@ -14,22 +14,22 @@ class ProcessActionAssistance(InterfaceProcessActionAssistance):
     """Manages card activation and standard assistance rewards."""
 
     _select_reward_manager: InterfaceSelectReward
-    _current_card: Optional[ICard]
+    _current_card: Optional[InterfaceCard]
 
     def __init__(self, select_reward_manager: InterfaceSelectReward):
         """Initialize with a reward manager."""
         self._select_reward_manager = select_reward_manager
         self._current_card = None
 
-    def current_card(self) -> Optional[ICard]:
+    def current_card(self) -> Optional[InterfaceCard]:
         """Return the current card being processed."""
         return self._current_card
 
     def _validate_and_setup(
         self,
-        card: ICard,
-        grid: IGrid,
-        assisting_card: Optional[ICard],
+        card: InterfaceCard,
+        grid: InterfaceGrid,
+        assisting_card: Optional[InterfaceCard],
         paid_resources: List[Resource],
         gained_resources: List[Resource],
         pollution_count: int
@@ -58,11 +58,11 @@ class ProcessActionAssistance(InterfaceProcessActionAssistance):
 
     def _validate_inputs(
         self,
-        grid: IGrid,
+        grid: InterfaceGrid,
         inputs: List[Tuple[Resource, GridPosition]]
     ) -> Optional[Dict[str, Any]]:
         """Validate that inputs can be used for the activation."""
-        involved_cards: Dict[GridPosition, ICard] = {}
+        involved_cards: Dict[GridPosition, InterfaceCard] = {}
         inputs_by_card: Dict[GridPosition, List[Resource]] = {}
 
         for res, pos in inputs:
@@ -80,9 +80,9 @@ class ProcessActionAssistance(InterfaceProcessActionAssistance):
     def _handle_standard_assistance_reward(
         self,
         player: int,
-        card: ICard,
+        card: InterfaceCard,
         pollution: List[GridPosition],
-        involved_cards: Dict[GridPosition, ICard],
+        involved_cards: Dict[GridPosition, InterfaceCard],
         paid_resources: List[Resource]
     ) -> bool:
         """Handle normal assistance reward (reward from paid resources)."""
@@ -99,10 +99,10 @@ class ProcessActionAssistance(InterfaceProcessActionAssistance):
 
     def activate_card(
         self,
-        card: ICard,
-        grid: IGrid,
+        card: InterfaceCard,
+        grid: InterfaceGrid,
         assisting_player: int,
-        assisting_card: ICard,
+        assisting_card: InterfaceCard,
         inputs: List[Tuple[Resource, GridPosition]],
         outputs: List[Tuple[Resource, GridPosition]],
         pollution: List[GridPosition]
@@ -154,8 +154,8 @@ class ProcessActionAssistance(InterfaceProcessActionAssistance):
         return success
     def _start_activation(
         self,
-        card: ICard,
-        assisting_card: Optional[ICard],
+        card: InterfaceCard,
+        assisting_card: Optional[InterfaceCard],
         assisting_player: int
     ) -> bool:
         """Check basic conditions and set current card."""
@@ -167,9 +167,9 @@ class ProcessActionAssistance(InterfaceProcessActionAssistance):
 
     def _validate_card_activation(
         self,
-        card: ICard,
-        grid: IGrid,
-        assisting_card: ICard,
+        card: InterfaceCard,
+        grid: InterfaceGrid,
+        assisting_card: InterfaceCard,
         paid_resources: List[Resource],
         gained_resources: List[Resource],
         pollution_count: int
@@ -187,9 +187,9 @@ class ProcessActionAssistance(InterfaceProcessActionAssistance):
 
     def _process_pollution_cards(
         self,
-        grid: IGrid,
+        grid: InterfaceGrid,
         pollution: List[GridPosition],
-        involved_cards: Dict[GridPosition, ICard]
+        involved_cards: Dict[GridPosition, InterfaceCard]
     ) -> bool:
         """Add pollution cards to involved_cards and check validity."""
         for pos in pollution:
@@ -202,9 +202,9 @@ class ProcessActionAssistance(InterfaceProcessActionAssistance):
     def _distribute_resources(
         self,
         inputs_by_card: Dict[GridPosition, List[Resource]],
-        involved_cards: Dict[GridPosition, ICard],
+        involved_cards: Dict[GridPosition, InterfaceCard],
         gained_resources: List[Resource],
-        card: ICard
+        card: InterfaceCard
     ) -> None:
         """Distribute resources to involved cards and the main card."""
         for pos, resources in inputs_by_card.items():

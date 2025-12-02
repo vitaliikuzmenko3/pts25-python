@@ -3,11 +3,11 @@ import unittest
 from typing import List, Optional, Dict, Tuple
 from terra_futura.process_action_assistance import ProcessActionAssistance
 from terra_futura.simple_types import GridPosition, Resource
-from terra_futura.interfaces import ICard, IGrid, InterfaceSelectReward
+from terra_futura.interfaces import InterfaceCard, InterfaceGrid, InterfaceSelectReward
 
 
-class FakeCard(ICard):
-    """Fake card implementing ICard for testing."""
+class FakeCard(InterfaceCard):
+    """Fake card implementing InterfaceCard for testing."""
 
     def __init__(self, has_assistance: bool = True, can_activate: bool = True) -> None:
         self.resources: Dict[Resource, int] = {}
@@ -48,21 +48,21 @@ class FakeCard(ICard):
         self.resources[resource] = self.resources.get(resource, 0) + count
 
 
-class FakeGrid(IGrid):
-    """Fake grid implementing IGrid for testing."""
+class FakeGrid(InterfaceGrid):
+    """Fake grid implementing InterfaceGrid for testing."""
 
     def __init__(self) -> None:
-        self.cards: Dict[Tuple[int, int], ICard] = {}
+        self.cards: Dict[Tuple[int, int], InterfaceCard] = {}
         self.activatable: Dict[Tuple[int, int], bool] = {}
 
-    def get_card(self, coordinate: GridPosition) -> Optional[ICard]:
+    def get_card(self, coordinate: GridPosition) -> Optional[InterfaceCard]:
         return self.cards.get((coordinate.x, coordinate.y))
 
     def can_put_card(self, coordinate: GridPosition) -> bool:
         _ = coordinate
         return True
 
-    def put_card(self, coordinate: GridPosition, card: ICard) -> None:
+    def put_card(self, coordinate: GridPosition, card: InterfaceCard) -> None:
         self.cards[(coordinate.x, coordinate.y)] = card
 
     def can_be_activated(self, coordinate: GridPosition) -> bool:
@@ -80,7 +80,7 @@ class FakeGrid(IGrid):
     def state(self) -> str:
         return "FakeGrid"
 
-    def place(self, x: int, y: int, card: ICard, active: bool = True) -> None:
+    def place(self, x: int, y: int, card: InterfaceCard, active: bool = True) -> None:
         self.cards[(x, y)] = card
         self.activatable[(x, y)] = active
 
@@ -94,7 +94,7 @@ class FakeReward(InterfaceSelectReward):
     def set_reward(
         self,
         player: int,
-        card: ICard,
+        card: InterfaceCard,
         reward: List[Resource]
     ) -> None:
         """Зберігає виклик set_reward для перевірки."""
