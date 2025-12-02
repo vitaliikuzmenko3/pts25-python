@@ -199,3 +199,37 @@ class InterfacePile:
     def state(self) -> str:
         """Return the pile state as a JSON-serializable string."""
         assert False
+class TerraFuturaInterface:
+    def takeCard(self, playerId: int, source: CardSource,
+                 destination: GridPosition) -> bool:
+        raise NotImplementedError
+
+    def discardLastCardFromDeck(self, playerId: int, deck: CardSource) -> bool:
+        raise NotImplementedError
+
+    def activateCard(
+            self,
+            playerId: int,
+            card: GridPosition,
+            inputs: List[tuple[Resource, GridPosition]],
+            outputs: List[tuple[Resource, GridPosition]],
+            pollution: List[GridPosition],
+            otherPlayerId: Optional[int],
+            otherCard: Optional[GridPosition],
+    ) -> bool:
+        raise NotImplementedError
+
+    def selectReward(self, playerId: int, resource: Resource) -> bool:
+        raise NotImplementedError
+
+    def turnFinished(self, playerId: int) -> bool:
+        raise NotImplementedError
+
+    def selectActivationPattern(self, playerId: int, card: int) -> bool:
+        raise NotImplementedError
+
+    def selectScoring(self, playerId: int, card: int) -> bool:
+        raise NotImplementedError
+
+    def state(self) -> str:
+        raise NotImplementedError
