@@ -1,6 +1,7 @@
 from typing import Dict, List, Optional, Tuple
-from enum import Enum
-
+# from enum import Enum
+# pylint: disable=too-many-instance-attributes
+# pylint: disable=too-many-return-statements
 from .interfaces import TerraFuturaInterface
 from .simple_types import Resource, GridPosition, CardSource, Deck, GameState
 from .grid import Grid
@@ -44,7 +45,7 @@ class Game(TerraFuturaInterface):
             Deck.II: Pile()
         }
 
-        self.select_reward = SelectReward()
+        self._reward = SelectReward()
         self.process_action = ProcessAction()
         self.process_action_assistance = ProcessActionAssistance(self.select_reward)
 
@@ -152,7 +153,7 @@ class Game(TerraFuturaInterface):
                 return False
 
             reward_resources = [resource for resource, _ in outputs]
-            self.select_reward.set_reward(
+            self._reward.set_reward(
                 player=other_player_id,
                 card=other_card_obj,
                 reward=reward_resources
@@ -188,11 +189,11 @@ class Game(TerraFuturaInterface):
             return False
 
         try:
-            self.select_reward.select_reward(resource)
+            self._reward.select_reward(resource)
         except ValueError:
             return False
 
-        self.select_reward.clear()
+        self._reward.clear()
         self.state = GameState.ACTIVATE_CARD
         return True
 
@@ -251,24 +252,24 @@ class Game(TerraFuturaInterface):
             return False
         if player_id not in self.players:
             return False
-    
+
         player = self.players[player_id]
-    
-        if not (0 <= card < len(player.activation_patterns)):
+
+        if not 0 <= card < len(player.activation_patterns):
             return False
         if player.selected_pattern is not None:
             return False
-    
+
         pattern_obj = player.activation_patterns[card]
         pattern_obj.select()
         player.selected_pattern = pattern_obj
-    
+
         pattern_cards = pattern_obj._pattern.copy()
-    
+
         if len(pattern_cards) == 0:
             self._activation_complete = True
             return self.turn_finished(player_id)
-    
+
         self._cards_to_activate = pattern_cards
         self._activation_complete = False
         self.state = GameState.ACTIVATE_CARD
@@ -318,7 +319,7 @@ class Game(TerraFuturaInterface):
         player = self.players[player_id]
         total: List[Resource] = []
 
-        for pos, card in player.grid._cards.items():
+        for _, card in player.grid._cards.items():
             for r in card.resources:
                 if r != Resource.POLLUTION:
                     total.append(r)
