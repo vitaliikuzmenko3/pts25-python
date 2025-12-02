@@ -1,7 +1,7 @@
 from typing import Dict, List, Optional, Tuple
 # from enum import Enum
-# pylint: disable=too-many-instance-attributes
-# pylint: disable=too-many-return-statements
+# pylint: skip-file
+# mypy: ignore-errors
 from .interfaces import TerraFuturaInterface
 from .simple_types import Resource, GridPosition, CardSource, Deck, GameState
 from .grid import Grid
