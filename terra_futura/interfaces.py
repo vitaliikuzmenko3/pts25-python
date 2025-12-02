@@ -221,12 +221,6 @@ class InterfaceCard:
     def state(self) -> str:
         raise NotImplementedError
 
-    def is_active(self) -> bool:
-        raise NotImplementedError
-
-    def get_position(self) -> GridPosition:
-        raise NotImplementedError
-
 
 class ObserverInterface:
     def notify(self, game_state: str) -> None:
