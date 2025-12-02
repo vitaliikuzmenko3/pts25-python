@@ -23,6 +23,52 @@ class TerraFuturaObserverInterface:
         assert False
 
 
+class ICard:
+    """Interface for a game card."""
+
+    def can_get_resources(self, resources: List[Resource]) -> bool:
+        """Check if the card can give the specified resources."""
+        assert False
+
+    def get_resources(self, resources: List[Resource]) -> None:
+        """Obtain the specified resources from the card."""
+        assert False
+
+    def can_put_resources(self, resources: List[Resource]) -> bool:
+        """Check if the specified resources can be placed on the card."""
+        assert False
+
+    def put_resources(self, resources: List[Resource]) -> None:
+        """Place the specified resources on the card."""
+        assert False
+
+    def check(
+        self,
+        inputs: List[Resource],
+        outputs: List[Resource],
+        pollution: int
+    ) -> bool:
+        """Check if the card operation is valid."""
+        assert False
+
+    def check_lower(
+        self,
+        inputs: List[Resource],
+        outputs: List[Resource],
+        pollution: int
+    ) -> bool:
+        """Check a lower-level card operation."""
+        assert False
+
+    def has_assistance(self) -> bool:
+        """Return True if the card has assistance applied."""
+        assert False
+
+    def state(self) -> str:
+        """Return the card state as a JSON-serializable string."""
+        assert False
+
+
 class InterfaceSelectReward:
     """Interface for selecting and setting rewards."""
 
@@ -173,6 +219,12 @@ class InterfaceCard:
         raise NotImplementedError
 
     def state(self) -> str:
+        raise NotImplementedError
+
+    def is_active(self) -> bool:
+        raise NotImplementedError
+
+    def get_position(self) -> GridPosition:
         raise NotImplementedError
 
 
