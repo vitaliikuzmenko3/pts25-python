@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 from typing import List, Optional
 from terra_futura.interfaces import InterfaceCard, InterfaceEffect
-from terra_futura.simple_types import Resource
 from terra_futura.simple_types import Resource, GridPosition
 
 
