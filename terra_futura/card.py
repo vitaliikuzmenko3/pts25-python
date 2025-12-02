@@ -54,7 +54,7 @@ class Card(InterfaceCard):
     pollution: int) -> bool:
         return (
             self.upper_effect is not None and
-            self.upper_effect.check(inputs, output, pollution)
+            self.upper_effect.check(inputs, outputs, pollution)
         )
 
     def check_lower(self,
@@ -63,7 +63,7 @@ class Card(InterfaceCard):
     pollution: int) -> bool:
         return (
             self.lower_effect is not None and
-            self.lower_effect.check(inputs, output, pollution)
+            self.lower_effect.check(inputs, outputs, pollution)
         )
 
     def has_assistance(self) -> bool:
