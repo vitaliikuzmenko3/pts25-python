@@ -23,7 +23,7 @@ class FakeEffect(InterfaceEffect):
         pollution: int
     ) -> bool:
         return (Counter(inputs) == self._inputs and
-                Counter(outputs) == self._outputs and
+                Counter(output) == self._outputs and
                 pollution == self._pollution)
 
     def has_assistance(self) -> bool:
