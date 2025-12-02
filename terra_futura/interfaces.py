@@ -29,7 +29,7 @@ class InterfaceSelectReward:
     def set_reward(
         self,
         player: int,
-        card: ICard,
+        card: InterfaceCard,
         reward: List[Resource]
     ) -> None:
         """Set a reward for a player and card."""
@@ -53,10 +53,10 @@ class InterfaceProcessActionAssistance:
 
     def activate_card(
         self,
-        card: ICard,
-        grid: IGrid,
+        card: InterfaceCard,
+        grid: InterfaceGrid,
         assisting_player: int,
-        assisting_card: ICard,
+        assisting_card: InterfaceCard,
         inputs: List[Tuple[Resource, GridPosition]],
         outputs: List[Tuple[Resource, GridPosition]],
         pollution: List[GridPosition]
@@ -66,11 +66,11 @@ class InterfaceProcessActionAssistance:
 
 class RandomProviderInterface:
     """Interface for random operations on the pile."""
-    def shuffle(self, _cards: List[ICard]) -> None:
+    def shuffle(self, _cards: List[InterfaceCard]) -> None:
         """Shuffle the given cards in place."""
         assert False
 
-    def pop_card(self, _cards: List[ICard]) -> Optional[ICard]:
+    def pop_card(self, _cards: List[InterfaceCard]) -> Optional[InterfaceCard]:
         """Pop a card from the given list."""
         assert False
 
@@ -146,7 +146,7 @@ class InterfaceEffect(Protocol):
 class InterfaceGrid:
     """Interface for the game grid."""
 
-    def get_card(self, coordinate: GridPosition) -> Optional[ICard]:
+    def get_card(self, coordinate: GridPosition) -> Optional[InterfaceCard]:
         """Get a card at the given coordinate."""
         assert False
 
@@ -154,7 +154,7 @@ class InterfaceGrid:
         """Check if a card can be placed at the coordinate."""
         assert False
 
-    def put_card(self, coordinate: GridPosition, card: ICard) -> None:
+    def put_card(self, coordinate: GridPosition, card: InterfaceCard) -> None:
         """Place a card at the given coordinate."""
         assert False
 
@@ -184,15 +184,15 @@ class InterfaceGrid:
 class InterfacePile:
     """Interface for a pile of cards."""
 
-    def get_card(self, index: int) -> Optional[ICard]:
+    def get_card(self, index: int) -> Optional[InterfaceCard]:
         """Get a card at the specified index."""
         assert False
 
-    def take_card(self, index: int) -> Optional[ICard]:
+    def take_card(self, index: int) -> Optional[InterfaceCard]:
         """Take a card from the specified index."""
         assert False
 
-    def remove_last_card(self) -> Optional[ICard]:
+    def remove_last_card(self) -> Optional[InterfaceCard]:
         """Remove the last visible card and move it to the discard pile."""
         assert False
 
