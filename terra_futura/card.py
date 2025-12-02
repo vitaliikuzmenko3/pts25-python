@@ -81,8 +81,7 @@ class Card(InterfaceCard):
 
     def state(self) -> str:
         return json.dumps({
-            "pos": str(self._pos),
-            "resources": [r.value for r in self.resources],
+            "resources": [r.name.capitalize() for r in self.resources],
             "pollution": sum(r == Resource.POLLUTION for r in self.resources),
             "pollution_limit": self.pollution_limit,
             "assistance": self.assistance,
